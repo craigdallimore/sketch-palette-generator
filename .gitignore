@@ -1,8 +1,6 @@
-/bower_components/
-/node_modules/
-/.pulp-cache/
-/output/
-/generated-docs/
-/.psc*
-/.purs*
-/.psa*
+.DS_Store
+dist
+.purs-repl
+.psci_modules
+bower_components
+output

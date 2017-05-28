@@ -8,12 +8,13 @@ import DOM.Event.EventTarget (addEventListener, eventListener)
 import DOM.Event.Types (Event)
 import DOM.HTML (window)
 import DOM.HTML.Event.EventTypes (keyup)
-import DOM.HTML.Types (htmlDocumentToParentNode)
+import DOM.HTML.Types (HTMLTextAreaElement, htmlDocumentToParentNode)
 import DOM.HTML.Window (document)
-import DOM.Node.Node (nodeValue)
+import DOM.HTML.HTMLTextAreaElement (value)
+import DOM.Classy.Node (fromNode)
 import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector))
 import DOM.Node.Types (elementToEventTarget)
-import Data.Maybe (maybe)
+import Data.Maybe (Maybe(Just), maybe)
 import Prelude
 
 -- Problems encountered
@@ -28,7 +29,11 @@ import Prelude
 -- 9. How can I access e.target.value?
 
 f :: forall eff. Event -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-f e = nodeValue (target e) >>= log
+f e = case (fromNode <<< target) e of
+  Just (ta :: HTMLTextAreaElement) -> do
+    val <- value ta
+    log val
+  _ -> log "?"
 
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 main = do
