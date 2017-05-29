@@ -23,6 +23,15 @@ f e = maybe
   (\textarea -> value (textarea :: HTMLTextAreaElement) >>= log)
   ((fromNode <<< target) e)
 
+{-
+hex  #000000 - #ffffff
+rgba 255 255 255 1 - 0 0 0 0
+hsla (0/360), 0% - 100%, 0% - 100%, 0 -1
+
+
+
+-}
+
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 main = do
   doc <- window >>= document
