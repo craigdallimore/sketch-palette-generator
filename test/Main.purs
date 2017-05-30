@@ -43,6 +43,9 @@ main = runTest do
       assert "A hex with out of bounds values shall not parse" $
         (parse "#GGG") == []
 
+      assert "Multiple hexes on one trim line shall be parsed" $
+        (parse "#000 #111 #222") == [c0, c1, c2]
+
       assert "Multiple hexes on one line shall be parsed" $
         (parse " #000 #111 #222 ") == [c0, c1, c2]
 
