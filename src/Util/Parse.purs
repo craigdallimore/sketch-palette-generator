@@ -9,8 +9,8 @@ import Data.String (fromCharArray)
 import Data.Maybe (Maybe(..))
 import Color (Color, fromHexString)
 import Text.Parsing.StringParser (Parser, try, fail, runParser)
-import Text.Parsing.StringParser.String (satisfy, char, whiteSpace, skipSpaces)
-import Text.Parsing.StringParser.Combinators (optional, sepEndBy)
+import Text.Parsing.StringParser.String (satisfy, anyChar, char, whiteSpace, skipSpaces)
+import Text.Parsing.StringParser.Combinators (optional, sepEndBy, many, manyTill)
 import Prelude
 
 isHex :: Char -> Boolean
@@ -43,19 +43,22 @@ parseHex6 = do
     Just c  -> pure c
 
 parseHex :: Parser Color
-parseHex = try parseHex6 <|> try parseHex3
+parseHex = try parseHex6 <|> parseHex3
 
--- Try looking at the implementation details and work out a way to ignore
--- non-hex characters...
+parseColor :: Parser (List Color)
+parseColor = skipNonHex *> sepEndBy parseHex nonHex
 
-p :: Parser (List Color)
-p = do
-  skipSpaces
-  c <- sepEndBy parseHex whiteSpace
-  pure c
+nonHex :: Parser (List Char)
+nonHex = many (satisfy (not <<< isHex))
 
-parse :: String -> Array Color
-parse s = either
+skipNonHex :: Parser Unit
+skipNonHex = void nonHex
+
+parse' :: Parser (List Color) -> String -> Array Color
+parse' p s = either
   (const [])
   fromFoldable
   (runParser p s)
+
+parse :: String -> Array Color
+parse = parse' parseColor
