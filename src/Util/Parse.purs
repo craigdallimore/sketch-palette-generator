@@ -3,13 +3,14 @@ module Util.Parse where
 import Control.Alt ((<|>))
 import Data.Array (fromFoldable)
 import Data.Char (toLower, toCharCode)
+import Data.List (List)
 import Data.Either (either)
 import Data.String (fromCharArray)
 import Data.Maybe (Maybe(..))
 import Color (Color, fromHexString)
 import Text.Parsing.StringParser (Parser, try, fail, runParser)
-import Text.Parsing.StringParser.String (satisfy, char)
-import Text.Parsing.StringParser.Combinators (optional, many)
+import Text.Parsing.StringParser.String (satisfy, char, whiteSpace, skipSpaces)
+import Text.Parsing.StringParser.Combinators (optional, sepEndBy)
 import Prelude
 
 isHex :: Char -> Boolean
@@ -44,8 +45,17 @@ parseHex6 = do
 parseHex :: Parser Color
 parseHex = try parseHex6 <|> try parseHex3
 
+-- Try looking at the implementation details and work out a way to ignore
+-- non-hex characters...
+
+p :: Parser (List Color)
+p = do
+  skipSpaces
+  c <- sepEndBy parseHex whiteSpace
+  pure c
+
 parse :: String -> Array Color
 parse s = either
   (const [])
   fromFoldable
-  (runParser (many parseHex) s)
+  (runParser p s)
