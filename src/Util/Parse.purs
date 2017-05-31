@@ -9,8 +9,8 @@ import Data.String (fromCharArray)
 import Data.Maybe (Maybe(..))
 import Color (Color, fromHexString)
 import Text.Parsing.StringParser (Parser, try, fail, runParser)
-import Text.Parsing.StringParser.String (satisfy, anyChar, char, whiteSpace, skipSpaces)
-import Text.Parsing.StringParser.Combinators (optional, sepEndBy, many, manyTill)
+import Text.Parsing.StringParser.String (char, satisfy, skipSpaces, whiteSpace)
+import Text.Parsing.StringParser.Combinators (optional, sepEndBy)
 import Prelude
 
 isHex :: Char -> Boolean
@@ -19,40 +19,41 @@ isHex c = isDigit || isABCDEF where
   isABCDEF = code >= 97 && code <= 102 {- a, f -}
   code     = (toCharCode <<< toLower) c
 
+hex :: Parser Char
+hex = satisfy isHex
+
 parseHex3 :: Parser Color
 parseHex3 = do
   _ <- optional (char '#')
-  r <- satisfy isHex
-  g <- satisfy isHex
-  b <- satisfy isHex
-  case (fromHexString ("#" <> fromCharArray [r, g, b])) of
-    Nothing -> (fail "Could not parse HEX3")
+  r <- hex
+  g <- hex
+  b <- hex
+  case fromHexString ("#" <> fromCharArray [r, g, b]) of
+    Nothing -> fail "Could not parse HEX3"
     Just c  -> pure c
 
 parseHex6 :: Parser Color
 parseHex6 = do
   _  <- optional (char '#')
-  r  <- satisfy isHex
-  r' <- satisfy isHex
-  g  <- satisfy isHex
-  g' <- satisfy isHex
-  b  <- satisfy isHex
-  b' <- satisfy isHex
-  case (fromHexString ("#" <> fromCharArray [r, r', g, g', b, b'])) of
-    Nothing -> (fail "Could not parse HEX6")
+  r  <- hex
+  r' <- hex
+  g  <- hex
+  g' <- hex
+  b  <- hex
+  b' <- hex
+  case fromHexString ("#" <> fromCharArray [r, r', g, g', b, b']) of
+    Nothing -> fail "Could not parse HEX6"
     Just c  -> pure c
 
 parseHex :: Parser Color
 parseHex = try parseHex6 <|> parseHex3
 
+-- trying some kind of recursive cleverness here...^
+-- parseColor :: Parser Color
+-- parseColor = (parseHex <|> anyChar *> parseColor)
+
 parseColor :: Parser (List Color)
-parseColor = skipNonHex *> sepEndBy parseHex nonHex
-
-nonHex :: Parser (List Char)
-nonHex = many (satisfy (not <<< isHex))
-
-skipNonHex :: Parser Unit
-skipNonHex = void nonHex
+parseColor = skipSpaces *> sepEndBy parseHex whiteSpace
 
 parse' :: Parser (List Color) -> String -> Array Color
 parse' p s = either
