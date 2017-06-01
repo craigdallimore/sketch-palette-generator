@@ -15,7 +15,8 @@
     "purescript-aff": "^3.1.0",
     "purescript-string-parsers": "^3.0.1",
     "purescript-colors": "^3.0.0",
-    "purescript-strings": "^3.1.0"
+    "purescript-strings": "^3.1.0",
+    "purescript-argonaut": "^3.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"

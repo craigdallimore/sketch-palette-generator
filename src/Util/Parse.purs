@@ -7,11 +7,14 @@ import Data.List (List)
 import Data.Either (either)
 import Data.String (fromCharArray)
 import Data.Maybe (Maybe(..))
-import Color (Color, fromHexString)
+import Data.Semigroup ((<>))
+import Control.Applicative (pure, (*>))
+import Color (fromHexString)
 import Text.Parsing.StringParser (Parser, try, fail, runParser)
 import Text.Parsing.StringParser.String (char, satisfy, skipSpaces, whiteSpace)
 import Text.Parsing.StringParser.Combinators (optional, sepEndBy)
-import Prelude
+import Prelude ((<$>), (>=), (<=), (&&), (<<<), (||), bind, const)
+import Util.Types
 
 isHex :: Char -> Boolean
 isHex c = isDigit || isABCDEF where
@@ -22,7 +25,7 @@ isHex c = isDigit || isABCDEF where
 hex :: Parser Char
 hex = satisfy isHex
 
-parseHex3 :: Parser Color
+parseHex3 :: Parser Color'
 parseHex3 = do
   _ <- optional (char '#')
   r <- hex
@@ -30,9 +33,9 @@ parseHex3 = do
   b <- hex
   case fromHexString ("#" <> fromCharArray [r, g, b]) of
     Nothing -> fail "Could not parse HEX3"
-    Just c  -> pure c
+    Just c  -> pure (Color' c)
 
-parseHex6 :: Parser Color
+parseHex6 :: Parser Color'
 parseHex6 = do
   _  <- optional (char '#')
   r  <- hex
@@ -43,23 +46,23 @@ parseHex6 = do
   b' <- hex
   case fromHexString ("#" <> fromCharArray [r, r', g, g', b, b']) of
     Nothing -> fail "Could not parse HEX6"
-    Just c  -> pure c
+    Just c  -> pure (Color' c)
 
-parseHex :: Parser Color
+parseHex :: Parser Color'
 parseHex = try parseHex6 <|> parseHex3
 
 -- trying some kind of recursive cleverness here...^
 -- parseColor :: Parser Color
 -- parseColor = (parseHex <|> anyChar *> parseColor)
 
-parseColor :: Parser (List Color)
+parseColor :: Parser (List Color')
 parseColor = skipSpaces *> sepEndBy parseHex whiteSpace
 
-parse' :: Parser (List Color) -> String -> Array Color
+parse' :: Parser (List Color') -> String -> Colors'
 parse' p s = either
-  (const [])
-  fromFoldable
+  (const (Colors' []))
+  (Colors' <$> fromFoldable)
   (runParser p s)
 
-parse :: String -> Array Color
+parse :: String -> Colors'
 parse = parse' parseColor
