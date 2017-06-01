@@ -15,22 +15,19 @@ import DOM.HTML.Window (document)
 import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector))
 import DOM.Node.Types (elementToEventTarget)
 import Data.Maybe (maybe)
-import Prelude
+import Prelude (Unit, bind, show, (<$>), (<<<), (>>=))
+import Util.Parse (parse)
+import Data.Argonaut (encodeJson)
 
-f :: forall eff. Event -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-f e = maybe
-  (log "No node found")
-  (\textarea -> value (textarea :: HTMLTextAreaElement) >>= log)
+f :: String -> forall eff. Eff (console :: CONSOLE | eff) Unit
+f s = log j where
+  j = (show <<< encodeJson <<< parse) s
+
+onTextChange :: forall eff. Event -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
+onTextChange e = maybe
+  (log "No textarea node found")
+  (\textarea -> value (textarea :: HTMLTextAreaElement) >>= f)
   ((fromNode <<< target) e)
-
-{-
-hex  #000000 - #ffffff
-rgba 255 255 255 1 - 0 0 0 0
-hsla (0/360), 0% - 100%, 0% - 100%, 0 -1
-
-
-
--}
 
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 main = do
@@ -38,5 +35,5 @@ main = do
   el  <- querySelector (QuerySelector "#in") (htmlDocumentToParentNode doc)
   maybe
     (log "No element #in found")
-    (addEventListener keyup (eventListener f) true)
+    (addEventListener keyup (eventListener onTextChange) true)
     (elementToEventTarget <$> el)
