@@ -24,11 +24,17 @@ import Prelude (Unit, bind, show, (<<<), (>>=), ($), (<$>), (<*>))
 import Util.Parse (parse)
 import Data.Argonaut (encodeJson)
 
+--------------------------------------------------------------------------------
+
 data Nodes = Nodes HTMLTextAreaElement HTMLUListElement
+
+--------------------------------------------------------------------------------
 
 f :: String -> forall eff. Eff (console :: CONSOLE | eff) Unit
 f s = log j where
   j = (show <<< encodeJson <<< parse) s
+
+--------------------------------------------------------------------------------
 
 onTextChange :: forall eff. HTMLUListElement
                          -> Event
@@ -37,6 +43,8 @@ onTextChange ul e = maybe
   (log "No textarea node found")
   (\textarea -> value (textarea :: HTMLTextAreaElement) >>= f)
   ((fromNode <<< target) e)
+
+--------------------------------------------------------------------------------
 
 queryNodes :: forall eff. ParentNode -> Eff (dom :: DOM | eff) (Maybe Nodes)
 queryNodes docNode = do
@@ -49,8 +57,11 @@ queryNodes docNode = do
 
   pure $ Nodes <$> mTextarea <*> mUl
 
+--------------------------------------------------------------------------------
+
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 main = do
+
   doc <- window >>= document
   let docNode = htmlDocumentToParentNode doc
 
