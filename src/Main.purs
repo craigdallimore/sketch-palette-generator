@@ -19,8 +19,8 @@ import DOM.HTML.Types ( HTMLTextAreaElement
 import DOM.HTML.Window (document)
 import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector))
 import DOM.Node.Types (elementToEventTarget, ParentNode)
-import Data.Maybe (Maybe(..), maybe)
-import Prelude (Unit, bind, show, (<<<), (>>=), ($), (<$>), (<*>))
+import Data.Maybe (Maybe, maybe)
+import Prelude (Unit, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
 import Util.Parse (parse)
 import Data.Argonaut (encodeJson)
 
@@ -30,9 +30,12 @@ data Nodes = Nodes HTMLTextAreaElement HTMLUListElement
 
 --------------------------------------------------------------------------------
 
-f :: String -> forall eff. Eff (console :: CONSOLE | eff) Unit
-f s = log j where
-  j = (show <<< encodeJson <<< parse) s
+-- Ok! Lets empty the UL and populate it with <li> elements next time!
+updateDOM :: HTMLUListElement
+          -> String
+          -> forall eff. Eff (console :: CONSOLE | eff) Unit
+updateDOM ul input = log sketchPalette where
+  sketchPalette = (show <<< encodeJson <<< parse) input
 
 --------------------------------------------------------------------------------
 
@@ -41,7 +44,7 @@ onTextChange :: forall eff. HTMLUListElement
                          -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 onTextChange ul e = maybe
   (log "No textarea node found")
-  (\textarea -> value (textarea :: HTMLTextAreaElement) >>= f)
+  (\textarea -> value (textarea :: HTMLTextAreaElement) >>= updateDOM ul)
   ((fromNode <<< target) e)
 
 --------------------------------------------------------------------------------
@@ -49,31 +52,32 @@ onTextChange ul e = maybe
 queryNodes :: forall eff. ParentNode -> Eff (dom :: DOM | eff) (Maybe Nodes)
 queryNodes docNode = do
 
-  mUlElement       <- querySelector (QuerySelector "#out") docNode
-  mTextareaElement <- querySelector (QuerySelector "#in")  docNode
+  -- querySelector qs docNode :: Eff ( dom ∷ DOM | eff ) (Maybe Element)
+  -- (=<<) fromElement        :: (Element -> Maybe SpecialisedElement)
+  --                             -> Maybe Element
+  --                             -> Maybe SpecialisedElement
+  --
+  -- Thus we lift that into Eff so that we can extract a Maybe SpecialisedElement
 
-  let mUl       = mUlElement       >>= fromElement
-      mTextarea = mTextareaElement >>= fromElement
+  textarea <- (=<<) fromElement <$> querySelector (QuerySelector "#in")  docNode
+  ul       <- (=<<) fromElement <$> querySelector (QuerySelector "#out") docNode
 
-  pure $ Nodes <$> mTextarea <*> mUl
+  pure $ Nodes <$> textarea <*> ul
+
+--------------------------------------------------------------------------------
+
+bindDOM :: forall eff. Nodes -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
+bindDOM (Nodes textarea ul) = do
+  let listener    = eventListener (onTextChange ul)
+      eventTarget = elementToEventTarget (toElement textarea)
+  addEventListener keyup listener true eventTarget
 
 --------------------------------------------------------------------------------
 
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-main = do
-
-  doc <- window >>= document
-  let docNode = htmlDocumentToParentNode doc
-
-  nodes <- queryNodes docNode
-
-  case nodes of
-
-    Nothing        -> log "Could not access elements"
-    Just (Nodes textarea ul) -> do
-
-      let listener    = eventListener (onTextChange ul)
-          eventTarget = elementToEventTarget (toElement textarea)
-      addEventListener keyup listener true eventTarget
+main = window
+  >>= document
+  >>= (queryNodes <<< htmlDocumentToParentNode)
+  >>= (maybe (log "Could not access elements") bindDOM)
 
 --------------------------------------------------------------------------------
