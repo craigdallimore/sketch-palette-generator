@@ -6,6 +6,7 @@ import Control.Monad.Eff.Console (CONSOLE, log)
 import DOM (DOM)
 import DOM.Classy.Node (fromNode)
 import DOM.Classy.Element (fromElement, toElement)
+import DOM.Classy.ParentNode (toParentNode)
 import DOM.Event.Event (target)
 import DOM.Event.EventTarget (addEventListener, eventListener)
 import DOM.Event.Types (Event)
@@ -17,7 +18,7 @@ import DOM.HTML.Types ( HTMLTextAreaElement
                       , htmlDocumentToParentNode
                       )
 import DOM.HTML.Window (document)
-import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector))
+import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector), children)
 import DOM.Node.Types (elementToEventTarget, ParentNode)
 import Data.Maybe (Maybe, maybe)
 import Prelude (Unit, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
@@ -30,12 +31,15 @@ data Nodes = Nodes HTMLTextAreaElement HTMLUListElement
 
 --------------------------------------------------------------------------------
 
--- Ok! Lets empty the UL and populate it with <li> elements next time!
 updateDOM :: HTMLUListElement
           -> String
-          -> forall eff. Eff (console :: CONSOLE | eff) Unit
-updateDOM ul input = log sketchPalette where
-  sketchPalette = (show <<< encodeJson <<< parse) input
+          -> forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
+updateDOM ul input = do
+  lis <- children (toParentNode ul)
+  log sketchPalette
+
+    where
+      sketchPalette = (show <<< encodeJson <<< parse) input
 
 --------------------------------------------------------------------------------
 
