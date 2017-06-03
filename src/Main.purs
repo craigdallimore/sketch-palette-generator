@@ -20,7 +20,7 @@ import DOM.HTML.Window (document)
 import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector))
 import DOM.Node.Types (elementToEventTarget, ParentNode)
 import Data.Maybe (Maybe(..), maybe)
-import Prelude (Unit, bind, show, (<<<), (>>=), ($))
+import Prelude (Unit, bind, show, (<<<), (>>=), ($), (<$>), (<*>))
 import Util.Parse (parse)
 import Data.Argonaut (encodeJson)
 
@@ -38,55 +38,23 @@ onTextChange ul e = maybe
   (\textarea -> value (textarea :: HTMLTextAreaElement) >>= f)
   ((fromNode <<< target) e)
 
-{-
-DOM.Classy.Element.fromElement ∷ ∀ e. IsElement e ⇒ Element → Maybe e
-
-DOM.Node.ParentNode.querySelector ∷ ∀ eff. QuerySelector
-→ ParentNode
-→ Eff ( dom ∷ DOM | eff ) (Maybe Element)
-
-m a -> (a -> m b) -> m b
-
-m e
-
-E (m e)
-DOM.Classy.Element.fromElement ∷ ∀ e. IsElement e ⇒ Element → Maybe e
--}
-
-
-n :: forall eff. ParentNode -> Eff (dom :: DOM | eff) (Maybe Nodes)
-n docNode = do
+queryNodes :: forall eff. ParentNode -> Eff (dom :: DOM | eff) (Maybe Nodes)
+queryNodes docNode = do
 
   mUlElement       <- querySelector (QuerySelector "#out") docNode
   mTextareaElement <- querySelector (QuerySelector "#in")  docNode
 
-  case mUlElement of
-    Nothing -> pure Nothing
-    Just ulElement -> do
+  let mUl       = mUlElement       >>= fromElement
+      mTextarea = mTextareaElement >>= fromElement
 
-      case mTextareaElement of
-        Nothing -> pure Nothing
-        Just textareaElement -> do
-
-          let mUl = fromElement ulElement
-
-          case mUl of
-            Nothing -> pure Nothing
-            Just ul -> do
-
-              let mTextarea = fromElement textareaElement
-
-              case mTextarea of
-                Nothing -> pure Nothing
-                Just textarea -> do
-                  pure $ pure (Nodes textarea ul)
+  pure $ Nodes <$> mTextarea <*> mUl
 
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 main = do
   doc <- window >>= document
   let docNode = htmlDocumentToParentNode doc
 
-  nodes <- n docNode
+  nodes <- queryNodes docNode
 
   case nodes of
 
@@ -94,7 +62,7 @@ main = do
     Just (Nodes textarea ul) -> do
 
       let listener    = eventListener (onTextChange ul)
-          eventLarget = elementToEventTarget (toElement textarea)
-      addEventListener keyup listener true eventLarget
+          eventTarget = elementToEventTarget (toElement textarea)
+      addEventListener keyup listener true eventTarget
 
 --------------------------------------------------------------------------------
