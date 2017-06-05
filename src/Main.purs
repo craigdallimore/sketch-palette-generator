@@ -6,7 +6,6 @@ import Control.Monad.Eff.Console (CONSOLE, log)
 import DOM (DOM)
 import DOM.Classy.Node (fromNode)
 import DOM.Classy.Element (fromElement, toElement)
-import DOM.Classy.ParentNode (toParentNode)
 import DOM.Event.Event (target)
 import DOM.Event.EventTarget (addEventListener, eventListener)
 import DOM.Event.Types (Event)
@@ -18,12 +17,20 @@ import DOM.HTML.Types ( HTMLTextAreaElement
                       , htmlDocumentToParentNode
                       )
 import DOM.HTML.Window (document)
-import DOM.Node.ParentNode (querySelector, QuerySelector(QuerySelector), children)
-import DOM.Node.Types (elementToEventTarget, ParentNode)
+import DOM.Node.ParentNode ( querySelector
+                           , QuerySelector(QuerySelector)
+                           )
+import DOM.Node.Node (appendChild)
+import DOM.Node.Types ( elementToEventTarget
+                      , elementToNode
+                      , ParentNode
+                      , documentFragmentToNode
+                      )
 import Data.Maybe (Maybe, maybe)
-import Prelude (Unit, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
+import Prelude (Unit, unit, discard, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
 import Util.Parse (parse)
 import Data.Argonaut (encodeJson)
+import Util.DOM (removeChildren, createColorListFrag)
 
 --------------------------------------------------------------------------------
 
@@ -35,11 +42,15 @@ updateDOM :: HTMLUListElement
           -> String
           -> forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 updateDOM ul input = do
-  lis <- children (toParentNode ul)
+  _ <- removeChildren ulNode
+  colorListFrag <- createColorListFrag colors
   log sketchPalette
-
-    where
-      sketchPalette = (show <<< encodeJson <<< parse) input
+  _ <- appendChild (documentFragmentToNode colorListFrag) ulNode
+  pure unit
+  where
+    colors        = parse input
+    sketchPalette = (show <<< encodeJson) colors
+    ulNode        = (elementToNode <<< toElement) ul
 
 --------------------------------------------------------------------------------
 

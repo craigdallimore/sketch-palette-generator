@@ -2,12 +2,16 @@ module Util.Types where
 
 import Prelude ((<$>), div)
 import Data.Int (toNumber)
+import Data.Show (class Show)
 
 import Data.Argonaut hiding (toNumber)
-import Color (Color, toRGBA)
+import Color (Color, toRGBA, toHexString)
 
 newtype Color' = Color' Color
 newtype Colors' = Colors' (Array Color')
+
+instance showColor :: Show Color' where
+  show (Color' color) = toHexString color
 
 instance encodeJsonColor :: EncodeJson Color' where
   encodeJson (Color' color)
