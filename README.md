@@ -4,14 +4,21 @@ A utility for generating a sketch palette from a set of colour codes.
 
 ## Todo
 
-- [ ] Generate example swatch
+- [ ] Sort example swatch
 - [ ] Provide download link
+- [ ] Styling
+- [ ] Improve readme
+- [ ] Make gh_pages
 
 ```javascript
+//
 var obj = {a: 123, b: "4 5 6"};
 var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 ```
 
+## Some color codes - useful for manual testing
+
+```
 #1d262f
 #004a9e
 #717a77
@@ -44,25 +51,4 @@ var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
 #ebf4ff
 #f9fbfa
 #47ebb4
-
-
-```json
-{
-  "colors": [
-    {
-      "alpha": 1,
-      "blue": 0.6078431372549019,
-      "green": 0.6078431372549019,
-      "red": 0.6078431372549019
-    },
-    {
-      "alpha": 1,
-      "blue": 1,
-      "green": 1,
-      "red": 1
-    }
-  ],
-  "compatibleVersion": "1.4",
-  "pluginVersion": "1.4"
-}
 ```
