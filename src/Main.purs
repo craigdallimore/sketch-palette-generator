@@ -15,13 +15,13 @@ import DOM.HTML.HTMLTextAreaElement (value)
 import DOM.HTML.Types ( HTMLTextAreaElement , HTMLUListElement , htmlDocumentToParentNode)
 import DOM.HTML.Window (document)
 import DOM.Node.Node (appendChild)
-import DOM.Node.ParentNode ( querySelector , QuerySelector(QuerySelector))
-import DOM.Node.Types ( elementToEventTarget , elementToNode , ParentNode , documentFragmentToNode)
+import DOM.Node.ParentNode (querySelector , QuerySelector(QuerySelector))
+import DOM.Node.Types (elementToEventTarget , elementToNode , ParentNode)
 import Data.Argonaut (encodeJson)
 import Data.Array (nub, sort)
 import Data.Maybe (Maybe, maybe)
 import Prelude (Unit, unit, discard, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
-import Util.DOM (removeChildren, createColorListFrag)
+import Util.DOM (removeChildren, createColorListFragNode)
 import Util.Parse (parse)
 import Util.Types (Colors'(..))
 
@@ -36,9 +36,9 @@ updateDOM :: HTMLUListElement
           -> forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 updateDOM ul input = do
   _ <- removeChildren ulNode
-  colorListFrag <- createColorListFrag colors
+  colorListFragNode <- createColorListFragNode colors
   log sketchPalette
-  _ <- appendChild (documentFragmentToNode colorListFrag) ulNode
+  _ <- appendChild colorListFragNode ulNode
   pure unit
   where
     fromColors (Colors' c) = c

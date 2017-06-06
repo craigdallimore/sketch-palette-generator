@@ -1,18 +1,19 @@
 module Util.DOM where
 
+import Color (toHexString)
 import Control.Monad.Eff (Eff)
 import DOM (DOM)
-import DOM.Node.Node (firstChild, removeChild, appendChild)
-import DOM.HTML.Types ( htmlDocumentToDocument)
 import DOM.HTML (window)
+import DOM.HTML.Types ( htmlDocumentToDocument)
 import DOM.HTML.Window (document)
-import DOM.Node.Document (createDocumentFragment, createElement)
+import DOM.Node.Document (createDocumentFragment, createElement, createTextNode)
 import DOM.Node.Element (setAttribute)
-import DOM.Node.Types (elementToNode, Node, DocumentFragment, documentFragmentToNode)
+import DOM.Node.Node (firstChild, removeChild, appendChild)
+import DOM.Node.Types (Document, elementToNode, Node, documentFragmentToNode, textToNode)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Prelude
-import Util.Types (Color')
+import Util.Types (Color'(..))
 
 --------------------------------------------------------------------------------
 
@@ -27,15 +28,36 @@ removeChildren parentNode = do
 
 --------------------------------------------------------------------------------
 
-createColorListFrag :: forall eff. Array Color' -> Eff (dom :: DOM | eff) DocumentFragment
-createColorListFrag colors = do
-  doc <- htmlDocumentToDocument <$> (window >>= document)
-  frag <- createDocumentFragment doc
-  let fragNode = documentFragmentToNode frag
-  _ <- for colors $ \color -> do
-    li <- createElement "li" doc
-    setAttribute "style" ("background-color:" <> (show color) <> ";") li
-    appendChild (elementToNode li) fragNode
-  pure frag
+appendListItem :: forall eff. Document
+                           -> Node
+                           -> Color'
+                           -> Eff (dom :: DOM | eff) Node
+appendListItem doc fragNode (Color' c) = do
+
+  li <- createElement "li" doc
+
+  let liNode = elementToNode li
+      hex    = toHexString c
+
+  textNode <- textToNode <$> createTextNode hex doc
+
+  setAttribute "style" ("background-color:" <> hex <> ";") li
+
+  _ <- appendChild textNode liNode
+  _ <- appendChild liNode fragNode
+
+  pure fragNode
+
+--------------------------------------------------------------------------------
+
+createColorListFragNode :: forall eff. Array Color'
+                        -> Eff (dom :: DOM | eff) Node
+createColorListFragNode colors = do
+
+  doc      <- htmlDocumentToDocument <$> (window >>= document)
+  fragNode <- documentFragmentToNode <$> createDocumentFragment doc
+  _        <- for colors $ appendListItem doc fragNode
+
+  pure fragNode
 
 --------------------------------------------------------------------------------
