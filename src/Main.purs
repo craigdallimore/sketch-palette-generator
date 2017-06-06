@@ -4,33 +4,26 @@ import Control.Applicative (pure)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import DOM (DOM)
-import DOM.Classy.Node (fromNode)
 import DOM.Classy.Element (fromElement, toElement)
+import DOM.Classy.Node (fromNode)
 import DOM.Event.Event (target)
 import DOM.Event.EventTarget (addEventListener, eventListener)
 import DOM.Event.Types (Event)
 import DOM.HTML (window)
 import DOM.HTML.Event.EventTypes (keyup)
 import DOM.HTML.HTMLTextAreaElement (value)
-import DOM.HTML.Types ( HTMLTextAreaElement
-                      , HTMLUListElement
-                      , htmlDocumentToParentNode
-                      )
+import DOM.HTML.Types ( HTMLTextAreaElement , HTMLUListElement , htmlDocumentToParentNode)
 import DOM.HTML.Window (document)
-import DOM.Node.ParentNode ( querySelector
-                           , QuerySelector(QuerySelector)
-                           )
 import DOM.Node.Node (appendChild)
-import DOM.Node.Types ( elementToEventTarget
-                      , elementToNode
-                      , ParentNode
-                      , documentFragmentToNode
-                      )
+import DOM.Node.ParentNode ( querySelector , QuerySelector(QuerySelector))
+import DOM.Node.Types ( elementToEventTarget , elementToNode , ParentNode , documentFragmentToNode)
+import Data.Argonaut (encodeJson)
+import Data.Array (nub, sort)
 import Data.Maybe (Maybe, maybe)
 import Prelude (Unit, unit, discard, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
-import Util.Parse (parse)
-import Data.Argonaut (encodeJson)
 import Util.DOM (removeChildren, createColorListFrag)
+import Util.Parse (parse)
+import Util.Types (Colors'(..))
 
 --------------------------------------------------------------------------------
 
@@ -48,7 +41,8 @@ updateDOM ul input = do
   _ <- appendChild (documentFragmentToNode colorListFrag) ulNode
   pure unit
   where
-    colors        = parse input
+    fromColors (Colors' c) = c
+    colors        = (sort <<< nub <<< fromColors <<< parse) input
     sketchPalette = (show <<< encodeJson) colors
     ulNode        = (elementToNode <<< toElement) ul
 

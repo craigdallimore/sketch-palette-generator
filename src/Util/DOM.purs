@@ -12,7 +12,7 @@ import DOM.Node.Types (elementToNode, Node, DocumentFragment, documentFragmentTo
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Prelude
-import Util.Types (Colors'(..))
+import Util.Types (Color')
 
 --------------------------------------------------------------------------------
 
@@ -27,8 +27,8 @@ removeChildren parentNode = do
 
 --------------------------------------------------------------------------------
 
-createColorListFrag :: forall eff. Colors' -> Eff (dom :: DOM | eff) DocumentFragment
-createColorListFrag (Colors' colors) = do
+createColorListFrag :: forall eff. Array Color' -> Eff (dom :: DOM | eff) DocumentFragment
+createColorListFrag colors = do
   doc <- htmlDocumentToDocument <$> (window >>= document)
   frag <- createDocumentFragment doc
   let fragNode = documentFragmentToNode frag
