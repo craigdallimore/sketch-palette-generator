@@ -7,13 +7,14 @@ import DOM.HTML (window)
 import DOM.HTML.Types ( htmlDocumentToDocument)
 import DOM.HTML.Window (document)
 import DOM.Node.Document (createDocumentFragment, createElement, createTextNode)
-import DOM.Node.Element (setAttribute)
+import DOM.Node.Element (setAttribute, setClassName)
 import DOM.Node.Node (firstChild, removeChild, appendChild)
 import DOM.Node.Types (Document, elementToNode, Node, documentFragmentToNode, textToNode)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Prelude
 import Util.Types (Color'(..))
+import Util.Color (isLight)
 
 --------------------------------------------------------------------------------
 
@@ -36,12 +37,16 @@ appendListItem doc fragNode (Color' c) = do
 
   li <- createElement "li" doc
 
-  let liNode = elementToNode li
-      hex    = toHexString c
+  let liNode    = elementToNode li
+      hex       = toHexString c
+      className = if   isLight c
+                  then "preview__item preview__item--light"
+                  else "preview__item preview__item--dark"
 
   textNode <- textToNode <$> createTextNode hex doc
 
   setAttribute "style" ("background-color:" <> hex <> ";") li
+  setClassName className li
 
   _ <- appendChild textNode liNode
   _ <- appendChild liNode fragNode
