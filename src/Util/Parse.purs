@@ -51,10 +51,6 @@ parseHex6 = do
 parseHex :: Parser Color'
 parseHex = try parseHex6 <|> parseHex3
 
--- trying some kind of recursive cleverness here...^
--- parseColor :: Parser Color
--- parseColor = (parseHex <|> anyChar *> parseColor)
-
 parseColor :: Parser (List Color')
 parseColor = skipSpaces *> sepEndBy parseHex whiteSpace
 
