@@ -16,7 +16,7 @@ instance eqColor :: Eq Color' where
   eq (Color' c1) (Color' c2) = eq c1 c2
 
 instance ordColor :: Ord Color' where
-  compare (Color' c1) (Color' c2) = compare hsla1.h hsla2.h where
+  compare (Color' c1) (Color' c2) = compare hsla1.l hsla2.l where
     hsla1 = toHSLA c1
     hsla2 = toHSLA c2
 
