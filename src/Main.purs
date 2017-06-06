@@ -5,61 +5,54 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import DOM (DOM)
 import DOM.Classy.Element (fromElement, toElement)
-import DOM.Classy.Node (fromNode)
-import DOM.Event.Event (target)
 import DOM.Event.EventTarget (addEventListener, eventListener)
 import DOM.Event.Types (Event)
 import DOM.HTML (window)
 import DOM.HTML.Event.EventTypes (keyup)
 import DOM.HTML.HTMLTextAreaElement (value)
-import DOM.HTML.Types ( HTMLTextAreaElement , HTMLUListElement , htmlDocumentToParentNode)
+import DOM.HTML.Types ( HTMLAnchorElement, HTMLTextAreaElement , HTMLUListElement , htmlDocumentToParentNode)
 import DOM.HTML.Window (document)
-import DOM.Node.Node (appendChild)
 import DOM.Node.ParentNode (querySelector , QuerySelector(QuerySelector))
-import DOM.Node.Types (elementToEventTarget , elementToNode , ParentNode)
+import DOM.Node.Types (elementToEventTarget, ParentNode)
 import Data.Argonaut (encodeJson)
 import Data.Array (nub, sort)
 import Data.Maybe (Maybe, maybe)
 import Prelude (Unit, unit, discard, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
-import Util.DOM (removeChildren, createColorListFragNode)
+import Util.DOM (updatePalette, updateDownloadLink)
 import Util.Parse (parse)
 import Util.Types (Colors'(..))
 
 --------------------------------------------------------------------------------
 
-data Nodes = Nodes HTMLTextAreaElement HTMLUListElement
+data Elements = Elements HTMLTextAreaElement HTMLUListElement HTMLAnchorElement
 
 --------------------------------------------------------------------------------
 
-updateDOM :: HTMLUListElement
+updateDOM :: Elements
           -> String
           -> forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-updateDOM ul input = do
-  _ <- removeChildren ulNode
-  colorListFragNode <- createColorListFragNode colors
-  log sketchPalette
-  _ <- appendChild colorListFragNode ulNode
+updateDOM (Elements _ ul a) input = do
+
+  updatePalette      ul colors
+  updateDownloadLink a  sketchPalette
   pure unit
+
   where
     fromColors (Colors' c) = c
     colors        = (sort <<< nub <<< fromColors <<< parse) input
     sketchPalette = (show <<< encodeJson) colors
-    ulNode        = (elementToNode <<< toElement) ul
 
 --------------------------------------------------------------------------------
 
-onTextChange :: forall eff. HTMLUListElement
+onTextChange :: forall eff. Elements
                          -> Event
                          -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-onTextChange ul e = maybe
-  (log "No textarea node found")
-  (\textarea -> value (textarea :: HTMLTextAreaElement) >>= updateDOM ul)
-  ((fromNode <<< target) e)
+onTextChange elements@(Elements textarea ul a) e = value textarea >>= updateDOM elements
 
 --------------------------------------------------------------------------------
 
-queryNodes :: forall eff. ParentNode -> Eff (dom :: DOM | eff) (Maybe Nodes)
-queryNodes docNode = do
+queryElements :: forall eff. ParentNode -> Eff (dom :: DOM | eff) (Maybe Elements)
+queryElements docNode = do
 
   -- querySelector qs docNode :: Eff ( dom ∷ DOM | eff ) (Maybe Element)
   -- (=<<) fromElement        :: (Element -> Maybe SpecialisedElement)
@@ -68,25 +61,26 @@ queryNodes docNode = do
   --
   -- Thus we lift that into Eff so that we can extract a Maybe SpecialisedElement
 
-  textarea <- (=<<) fromElement <$> querySelector (QuerySelector "#in")  docNode
+  textarea <- (=<<) fromElement <$> querySelector (QuerySelector "#in") docNode
   ul       <- (=<<) fromElement <$> querySelector (QuerySelector "#out") docNode
+  a        <- (=<<) fromElement <$> querySelector (QuerySelector "#download") docNode
 
-  pure $ Nodes <$> textarea <*> ul
+  pure $ Elements <$> textarea <*> ul <*> a
 
 --------------------------------------------------------------------------------
 
-bindDOM :: forall eff. Nodes -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-bindDOM (Nodes textarea ul) = do
-  let listener    = eventListener (onTextChange ul)
-      eventTarget = elementToEventTarget (toElement textarea)
-  addEventListener keyup listener true eventTarget
+bindDOM :: forall eff. Elements -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
+bindDOM elements@(Elements textarea ul a) = addEventListener keyup listener true eventTarget
+  where
+    listener    = eventListener (onTextChange elements)
+    eventTarget = (elementToEventTarget <<< toElement) textarea
 
 --------------------------------------------------------------------------------
 
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
 main = window
   >>= document
-  >>= (queryNodes <<< htmlDocumentToParentNode)
+  >>= (queryElements <<< htmlDocumentToParentNode)
   >>= (maybe (log "Could not access elements") bindDOM)
 
 --------------------------------------------------------------------------------
