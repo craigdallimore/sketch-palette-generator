@@ -7,8 +7,32 @@
   box-sizing : border-box;
 }
 
-body {
+/* Colours
+----------------------------------------------------------------------------- */
 
-  background : red;
+:root {
 
+  /* http://base2t.one/demo/sea/ */
+  --clr-black-0: #1d262f;
+  --clr-white-0: #efefef;
+
+}
+
+:root {
+
+  --ms-bases  : 0.75;
+  --ms-ratios : 1.414;
+
+}
+
+.preview__item {
+  padding : ms(1)rem;
+}
+
+.preview__item--dark {
+  color : var(--clr-white-0);
+}
+
+.preview__item--light {
+  color : var(--clr-black-0);
 }
