@@ -1,0 +1,37 @@
+{
+  "name": "sketch-palette",
+  "version": "1.0.0",
+  "description": "Convert hex codes to a sketch palette",
+  "main": "dist/main.js",
+  "scripts": {
+    "css": "node build-css",
+    "dev": "static-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/craigdallimore/sketch-palette-generator.git"
+  },
+  "keywords": [
+    "Sketch",
+    "Palette",
+    "Colors"
+  ],
+  "author": "craigdallimore",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/craigdallimore/sketch-palette-generator/issues"
+  },
+  "homepage": "https://github.com/craigdallimore/sketch-palette-generator#readme",
+  "devDependencies": {
+    "cssnano": "^4.0.0-rc.0",
+    "normalize.css": "^7.0.0",
+    "postcss": "^6.0.1",
+    "postcss-cli": "^4.0.0",
+    "postcss-color-function": "^4.0.0",
+    "postcss-custom-properties": "^6.0.1",
+    "postcss-import": "^10.0.0",
+    "postcss-modular-scale": "^2.5.2",
+    "static-server": "^2.0.4"
+  }
+}
