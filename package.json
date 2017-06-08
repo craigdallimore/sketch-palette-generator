@@ -5,8 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "css": "node build-css",
-    "watch": "nodemon -e css -x \"node build-css && notify-send -i face-cool CSS built\"",
-    "dev": "static-server",
+    "dev": "static-server & livereload & nodemon -e css -x \"node build-css\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,6 +25,7 @@
   "homepage": "https://github.com/craigdallimore/sketch-palette-generator#readme",
   "devDependencies": {
     "cssnano": "^4.0.0-rc.0",
+    "livereload": "^0.6.2",
     "nodemon": "^1.11.0",
     "normalize.css": "^7.0.0",
     "postcss": "^6.0.1",
