@@ -1,0 +1,8 @@
+/* Base
+----------------------------------------------------------------------------- */
+
+@import 'node_modules/normalize.css/normalize.css';
+
+* {
+  box-sizing : border-box;
+}
