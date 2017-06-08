@@ -9,9 +9,37 @@
     <link rel="stylesheet" href="dist/style.min.css">
   </head>
   <body>
-    <textarea id="in"></textarea>
-    <ul class="" id="out"></ul>
-    <a href="#" id="download">download</a>
+
+    <header>
+      <h1>HEX-to-SketchPalette</h1>
+      <h2>Convert hex codes to a sketch palette</h2>
+    </header>
+
+    <main>
+
+      <p>This will generate a <a href="https://www.sketchapp.com/">SketchApp</a> palette from a list of hex color codes (e.g. <code>#333</code> or <code>fefefe</code>).</p>
+      <p>The palette format is intended to be compatible with the <a href="https://github.com/andrewfiorillo/sketch-palettes">Sketch Palettes</a> plugin.</p>
+
+      <section class="app">
+
+        <section class="app__in">
+          <p>Add your hex codes here:</p>
+          <textarea id="in"></textarea>
+        </section>
+
+        <section class="app__out">
+          <p>Download the sketch palette</p>
+          <a href="#" id="download">custom.sketchpalette</a>
+          <ul class="preview" id="out">
+            <li class="preview__item--empty">A palette preview should appear here</li>
+          </ul>
+        </section>
+
+      </section>
+
+    </main>
+
     <script src="dist/main.js"></script>
+
   </body>
 </html>

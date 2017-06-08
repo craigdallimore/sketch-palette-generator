@@ -2,6 +2,7 @@
 ----------------------------------------------------------------------------- */
 
 @import 'node_modules/normalize.css/normalize.css';
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
 * {
   box-sizing : border-box;
@@ -20,8 +21,45 @@
 
 :root {
 
-  --ms-bases  : 0.75;
+  --ms-bases  : 0.5;
   --ms-ratios : 1.414;
+
+  /* http://base2t.one/demo/drawbridge/ */
+  --clr-black-0: #1b1f32;
+  --clr-black-1: #252a41;
+  --clr-black-2: #444b6f;
+  --clr-black-3: #51587b;
+  --clr-black-4: #5e6587;
+  --clr-black-5: #797e96;
+  --clr-black-6: #9094a7;
+  --clr-black-7: #a6aab9;
+
+  --clr-blue-0: #4961da;
+  --clr-blue-1: #516aec;
+  --clr-blue-2: #627af4;
+  --clr-blue-3: #7289fd;
+  --clr-blue-4: #8b9efd;
+  --clr-blue-5: #a5b3fe;
+  --clr-blue-6: #c3cdfe;
+  --clr-blue-7: #e1e6ff;
+
+  --clr-grey-0: #71787a;
+  --clr-grey-1: #818b8d;
+  --clr-grey-2: #939c9f;
+  --clr-grey-3: #a6aeb0;
+  --clr-grey-4: #b7c0c2;
+  --clr-grey-5: #cbd4d7;
+  --clr-grey-6: #e1e8ea;
+  --clr-grey-7: #f9fbfb;
+
+  --clr-teal-0: #289dbd;
+  --clr-teal-1: #33abcc;
+  --clr-teal-2: #4db0cb;
+  --clr-teal-3: #5cbcd6;
+  --clr-teal-4: #67c9e4;
+  --clr-teal-5: #75d5f0;
+  --clr-teal-6: #86e0f9;
+  --clr-teal-7: #99e9ff;
 
 }
 
@@ -36,3 +74,86 @@
 .preview__item--light {
   color : var(--clr-black-0);
 }
+
+/* Layout
+----------------------------------------------------------------------------- */
+
+header,
+main {
+  padding : ms(2)rem;
+}
+
+.app {
+  display : flex;
+  flex-direction : column;
+}
+
+.app__in,
+.app__out {
+  display : flex;
+  flex-direction : column;
+  flex : 1 0 auto;
+}
+
+.app__out {
+  padding-left : ms(3)rem;
+}
+
+@media (min-width: 700px) {
+  .app {
+    flex-direction : row;
+  }
+}
+
+@media (min-width: 1000px) {
+  h1,
+  h2,
+  main > p,
+  .app {
+    margin-left  : auto;
+    margin-right : auto;
+    width : 1000px;
+  }
+}
+
+/* Theme
+----------------------------------------------------------------------------- */
+
+body {
+  background  : var(--clr-grey-7);
+  color       : var(--clr-black-0);
+  font-family : "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+header {
+  background          : var(--clr-grey-6);
+  border-bottom       : 1px solid;
+  border-bottom-color : var(--clr-grey-1);
+}
+
+h1,
+h2,
+h3 {
+  font-weight : normal;
+}
+
+a {
+  color : var(--clr-teal-0);
+}
+
+a:hover,
+a:focus {
+  color : var(--clr-teal-2);
+}
+
+a:active {
+  color : var(--clr-blue-1);
+}
+
+textarea {
+  border        : 1px solid;
+  border-color  : var(--clr-grey-1);
+  min-height    : ms(10)rem;
+}
+
+/* ------------------------------------------------------------------- KAIZEN */
