@@ -1,0 +1,5 @@
+.DS_Store
+.purs-repl
+.psci_modules
+bower_components
+output
