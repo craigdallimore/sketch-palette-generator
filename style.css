@@ -63,24 +63,28 @@
 
 }
 
-.preview__item {
-  padding : ms(1)rem;
-}
-
-.preview__item--dark {
-  color : var(--clr-white-0);
-}
-
-.preview__item--light {
-  color : var(--clr-black-0);
-}
-
 /* Layout
 ----------------------------------------------------------------------------- */
 
+html,
+body {
+  min-height : 100%;
+}
+
+body {
+  display : flex;
+  flex-direction : column;
+}
+
 header,
+footer,
 main {
   padding : ms(2)rem;
+  flex : 1 0 auto;
+}
+
+main {
+  padding-bottom : ms(4)rem;
 }
 
 .app {
@@ -109,6 +113,7 @@ main {
   h1,
   h2,
   main > p,
+  footer > ul,
   .app {
     margin-left  : auto;
     margin-right : auto;
@@ -120,7 +125,7 @@ main {
 ----------------------------------------------------------------------------- */
 
 body {
-  background  : var(--clr-grey-7);
+  background : var(--clr-grey-5);
   color       : var(--clr-black-0);
   font-family : "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
@@ -128,7 +133,11 @@ body {
 header {
   background          : var(--clr-grey-6);
   border-bottom       : 1px solid;
-  border-bottom-color : var(--clr-grey-1);
+  border-bottom-color : var(--clr-grey-3);
+}
+
+main {
+  background  : var(--clr-grey-7);
 }
 
 h1,
@@ -154,6 +163,38 @@ textarea {
   border        : 1px solid;
   border-color  : var(--clr-grey-1);
   min-height    : ms(10)rem;
+}
+
+footer {
+  border-top: 1px solid;
+  border-color : var(--clr-grey-3);
+}
+
+footer ul {
+  display : flex;
+  list-style : none;
+  padding : 0;
+}
+
+footer li {
+  font-size : ms(1.5)rem;
+  color : var(--clr-black-2);
+}
+
+footer li + li {
+  margin-left : ms(2)rem;
+}
+
+.preview__item {
+  padding : ms(1)rem;
+}
+
+.preview__item--dark {
+  color : var(--clr-white-0);
+}
+
+.preview__item--light {
+  color : var(--clr-black-0);
 }
 
 /* ------------------------------------------------------------------- KAIZEN */
