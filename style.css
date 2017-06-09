@@ -87,6 +87,15 @@ main {
   padding-bottom : ms(4)rem;
 }
 
+footer ul {
+  display : flex;
+  flex-direction : column;
+}
+
+footer li + li {
+  margin-top : ms(2)rem;
+}
+
 .app {
   display : flex;
   flex-direction : column;
@@ -171,18 +180,12 @@ footer {
 }
 
 footer ul {
-  display : flex;
   list-style : none;
   padding : 0;
 }
 
 footer li {
-  font-size : ms(1.5)rem;
-  color : var(--clr-black-2);
-}
-
-footer li + li {
-  margin-left : ms(2)rem;
+  color : var(--clr-grey-0);
 }
 
 .preview__item {
