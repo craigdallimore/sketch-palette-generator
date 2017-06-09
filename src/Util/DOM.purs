@@ -8,10 +8,10 @@ import DOM.Classy.Element (toElement)
 import DOM.HTML (window)
 import DOM.HTML.Types (htmlDocumentToDocument, HTMLAnchorElement, HTMLUListElement)
 import DOM.HTML.Window (document)
-import DOM.Node.Document (createDocumentFragment, createElement, createTextNode)
-import DOM.Node.Element (setAttribute, setClassName)
-import DOM.Node.Node (firstChild, removeChild, appendChild)
-import DOM.Node.Types (Document, elementToNode, Node, documentFragmentToNode, textToNode)
+import DOM.Node.Document (createDocumentFragment, createElement)
+import DOM.Node.Element (setAttribute, removeAttribute, setClassName)
+import DOM.Node.Node (firstChild, removeChild, appendChild, setTextContent)
+import DOM.Node.Types (Document, elementToNode, Node, documentFragmentToNode)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Data.Argonaut (encodeJson)
@@ -41,13 +41,27 @@ removeChildren parentNode = do
 updatePalette :: forall eff. HTMLUListElement
                           -> Array Color'
                           -> Eff (dom :: DOM | eff) Unit
-updatePalette ul colors = if isEmpty colors
-  then pure unit
-  else do
-    _ <- removeChildren ulNode
-    colorListFragNode <- createColorListFragNode colors
-    _ <- appendChild colorListFragNode ulNode
-    pure unit
+updatePalette ul colors = do
+  _ <- removeChildren ulNode
+
+  if isEmpty colors then do
+      doc <- htmlDocumentToDocument <$> (window >>= document)
+      li  <- createElement "li" doc
+
+      let liNode = elementToNode li
+
+      setClassName "preview__item preview__item--empty" li
+      setTextContent "Maybe try one hexcode per line?" liNode
+
+      _ <- appendChild liNode ulNode
+
+      pure unit
+
+    else do
+      colorListFragNode <- createColorListFragNode colors
+      _ <- appendChild colorListFragNode ulNode
+      pure unit
+
   where
     ulNode = (elementToNode <<< toElement) ul
 
@@ -57,8 +71,11 @@ updateDownloadLink :: forall eff. HTMLAnchorElement
                                -> Array Color'
                                -> Eff (dom :: DOM | eff) Unit
 updateDownloadLink a colors = if isEmpty colors
-  then pure unit
+  then do
+    setAttribute "disabled" "disabled" aElement
+    pure unit
   else do
+    removeAttribute "disabled" aElement
     setAttribute "href" href aElement
     setAttribute "download" "custom.sketchpalette" aElement
     pure unit
@@ -69,11 +86,11 @@ updateDownloadLink a colors = if isEmpty colors
 
 --------------------------------------------------------------------------------
 
-appendListItem :: forall eff. Document
-                           -> Node
-                           -> Color'
-                           -> Eff (dom :: DOM | eff) Node
-appendListItem doc fragNode (Color' c) = do
+appendPreviewSwatchItem :: forall eff. Document
+                                    -> Node
+                                    -> Color'
+                                    -> Eff (dom :: DOM | eff) Node
+appendPreviewSwatchItem doc fragNode (Color' c) = do
 
   li <- createElement "li" doc
 
@@ -83,12 +100,10 @@ appendListItem doc fragNode (Color' c) = do
                   then "preview__item preview__item--light"
                   else "preview__item preview__item--dark"
 
-  textNode <- textToNode <$> createTextNode hex doc
-
   setAttribute "style" ("background-color:" <> hex <> ";") li
   setClassName className li
+  setTextContent hex liNode
 
-  _ <- appendChild textNode liNode
   _ <- appendChild liNode fragNode
 
   pure fragNode
@@ -101,7 +116,7 @@ createColorListFragNode colors = do
 
   doc      <- htmlDocumentToDocument <$> (window >>= document)
   fragNode <- documentFragmentToNode <$> createDocumentFragment doc
-  _        <- for colors $ appendListItem doc fragNode
+  _        <- for colors $ appendPreviewSwatchItem doc fragNode
 
   pure fragNode
 

@@ -46,7 +46,8 @@ updateDOM (Elements _ ul a) colors = do
 onTextChange :: forall eff. Elements
                          -> Event
                          -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-onTextChange elements@(Elements textarea ul a) e = extractColors <$> value textarea >>= updateDOM elements
+onTextChange elements@(Elements textarea ul a) e =
+  extractColors <$> value textarea >>= updateDOM elements
 
 --------------------------------------------------------------------------------
 
