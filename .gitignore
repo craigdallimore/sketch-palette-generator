@@ -5,6 +5,4 @@ bower_components
 node_modules
 output
 npm-debug.log
-dist/*.js
-dist/*.css
-dist/*.map
+dist
