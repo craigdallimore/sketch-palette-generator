@@ -14,13 +14,12 @@ import DOM.HTML.Types ( HTMLAnchorElement, HTMLTextAreaElement , HTMLUListElemen
 import DOM.HTML.Window (document)
 import DOM.Node.ParentNode (querySelector , QuerySelector(QuerySelector))
 import DOM.Node.Types (elementToEventTarget, ParentNode)
-import Data.Argonaut (encodeJson)
 import Data.Array (nub, sort)
 import Data.Maybe (Maybe, maybe)
-import Prelude (Unit, unit, discard, bind, show, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
+import Prelude (Unit, unit, discard, bind, (<<<), (>>=), ($), (<$>), (<*>), (=<<))
 import Util.DOM (updatePalette, updateDownloadLink)
 import Util.Parse (parse)
-import Util.Types (Colors'(..))
+import Util.Types (Color', Colors'(..))
 
 --------------------------------------------------------------------------------
 
@@ -28,26 +27,26 @@ data Elements = Elements HTMLTextAreaElement HTMLUListElement HTMLAnchorElement
 
 --------------------------------------------------------------------------------
 
+extractColors :: String -> Array Color'
+extractColors = (sort <<< nub <<< fromColors <<< parse) where
+  fromColors (Colors' c) = c
+
+--------------------------------------------------------------------------------
+
 updateDOM :: Elements
-          -> String
+          -> Array Color'
           -> forall eff. Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-updateDOM (Elements _ ul a) input = do
-
+updateDOM (Elements _ ul a) colors = do
   updatePalette      ul colors
-  updateDownloadLink a  sketchPalette
+  updateDownloadLink a  colors
   pure unit
-
-  where
-    fromColors (Colors' c) = c
-    colors        = (sort <<< nub <<< fromColors <<< parse) input
-    sketchPalette = (show <<< encodeJson) colors
 
 --------------------------------------------------------------------------------
 
 onTextChange :: forall eff. Elements
                          -> Event
                          -> Eff (dom :: DOM, console :: CONSOLE | eff) Unit
-onTextChange elements@(Elements textarea ul a) e = value textarea >>= updateDOM elements
+onTextChange elements@(Elements textarea ul a) e = extractColors <$> value textarea >>= updateDOM elements
 
 --------------------------------------------------------------------------------
 
