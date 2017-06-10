@@ -77,10 +77,16 @@ body {
   line-height : 1.5;
 }
 
-header,
-footer,
 main {
   padding : ms(2)rem;
+  flex : 1 0 auto;
+}
+
+header,
+footer {
+  padding : ms(2)rem;
+  padding-top : 0;
+  padding-bottom : 0;
   flex : 1 0 auto;
 }
 
@@ -90,10 +96,15 @@ main {
 
 footer ul {
   display : flex;
-  flex-direction : column;
+  flex-direction : row;
+  flex-wrap : wrap;
 }
 
-footer li + li {
+footer li {
+  width : 100%;
+}
+
+footer li {
   margin-top : ms(2)rem;
 }
 
@@ -134,6 +145,11 @@ footer li + li {
   .app > section:last-child {
     margin-right : 0;
   }
+
+  footer li {
+    width : 50%;
+  }
+
 }
 
 @media (min-width: 1000px) {
@@ -144,7 +160,7 @@ footer li + li {
   .app {
     margin-left  : auto;
     margin-right : auto;
-    width : 1000px;
+    max-width : 1000px;
   }
 }
 
