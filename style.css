@@ -74,6 +74,7 @@ body {
 body {
   display : flex;
   flex-direction : column;
+  line-height : 1.5;
 }
 
 header,
@@ -99,6 +100,7 @@ footer li + li {
 .app {
   display        : flex;
   flex-direction : column;
+  margin-top     : ms(4)rem;
 }
 
 .app > section {
@@ -189,12 +191,24 @@ a[disabled] {
   pointer-events : none;
 }
 
+code {
+  border : 1px solid var(--clr-grey-5);
+  background : var(--clr-grey-6);
+  color : var(--clr-grey-1);
+  border-radius : 3px;
+  margin : 0 2px;
+}
+
 textarea {
-  border        : 1px solid;
-  border-color  : var(--clr-grey-1);
+  border        : 1px solid var(--clr-grey-4);
   min-height    : ms(10)rem;
   padding       : ms(2)rem;
   font-family   : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+
+textarea:focus {
+  border : 1px solid var(--clr-teal-2);
+  box-shadow : 0 0 5px rgba(40,157,189,0.4);
 }
 
 footer {
@@ -216,7 +230,6 @@ footer li {
 
 .app {
   border-top : 1px solid var(--clr-grey-4);
-  margin-top : ms(3)rem;
 }
 
 .app h4 {
