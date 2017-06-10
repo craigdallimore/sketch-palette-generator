@@ -15,7 +15,7 @@ import DOM.Node.Types (Document, elementToNode, Node, documentFragmentToNode)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Data.Argonaut (encodeJson)
-import Prelude (Unit, unit, show, negate, (<$>), bind, pure, discard, (<<<), (<>), (>>=), ($), (==))
+import Prelude (Unit, unit, show, (<$>), bind, pure, discard, (<<<), (<>), (>>=), ($), (==))
 import Global (encodeURIComponent)
 import Util.Color (isLight)
 import Util.Types (Color'(..))
@@ -96,7 +96,7 @@ appendPreviewSwatchItem doc fragNode (Color' c) = do
 
   let liNode    = elementToNode li
       bgHex     = toHexString c
-      bdrHex    = (toHexString <<< darken (negate 0.5)) c
+      bdrHex    = (toHexString <<< darken 0.5) c
       style     = "background-color:" <> bgHex <> ";" <> "border-color:" <> bdrHex <> ";"
       className = if isLight c
                   then "preview__item preview__item--light"
