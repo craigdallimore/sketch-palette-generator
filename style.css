@@ -264,7 +264,6 @@ footer li {
   border-color : transparent;
   color        : var(--clr-grey-3);
   height       : auto;
-  padding      : ms(2)rem;
   text-align   : center;
   width        : 100%;
 }
