@@ -97,15 +97,15 @@ footer li + li {
 }
 
 .app {
-  display : flex;
+  display        : flex;
   flex-direction : column;
 }
 
 .app > section {
-  display : flex;
+  display        : flex;
   flex-direction : column;
-  flex : 1 0 33%;
-  margin : 1rem 0;
+  flex           : 1 0 auto;
+  margin         : 1rem 0;
 }
 
 .app > section:first-child {
@@ -193,6 +193,8 @@ textarea {
   border        : 1px solid;
   border-color  : var(--clr-grey-1);
   min-height    : ms(10)rem;
+  padding       : ms(2)rem;
+  font-family   : Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 }
 
 footer {
@@ -218,8 +220,8 @@ footer li {
 }
 
 .app h4 {
-  text-align : center;
-  font-weight : normal;
+  font-weight    : normal;
+  text-align     : center;
   text-transform : uppercase;
 }
 
@@ -227,30 +229,31 @@ footer li {
 ----------------------------------------------------------------------------- */
 
 .preview {
-  margin : 0;
-  border : 1px solid var(--clr-grey-4);
-  border-radius: 5px;
-  padding : 5px;
-  /* max-width : 300px; */
-  display : flex;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  list-style : none;
-  flex-wrap : wrap;
+  border        : 1px solid var(--clr-grey-4);
+  border-radius : 5px;
+  box-shadow    : 0 3px 10px rgba(0,0,0,0.2);
+  display       : flex;
+  flex-wrap     : wrap;
+  list-style    : none;
+  margin        : 0;
+  padding       : 5px;
 }
 
 .preview__item {
-  width : ms(2.5)rem;
-  height : ms(2.5)rem;
-  margin : 5px;
+  border        : 1px solid;
   border-radius : 2px;
+  height        : ms(2.5)rem;
+  margin        : 5px;
+  width         : ms(2.5)rem;
 }
 
 .preview__item--empty {
-  width : 100%;
-  height : auto;
-  padding : ms(2)rem;
-  text-align : center;
-  color : var(--clr-grey-3);
+  border-color : transparent;
+  color        : var(--clr-grey-3);
+  height       : auto;
+  padding      : ms(2)rem;
+  text-align   : center;
+  width        : 100%;
 }
 
 .preview__item--dark {
