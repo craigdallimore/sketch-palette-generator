@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------------- */
 
 @import 'node_modules/normalize.css/normalize.css';
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url('https://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps|Source+Sans+Pro');
 
 * {
   box-sizing : border-box;
@@ -275,6 +275,55 @@ footer li {
 
 .preview__item--light {
   color : var(--clr-black-0);
+}
+
+/* Fabulous download button
+----------------------------------------------------------------------------- */
+.btn-faaabulous {
+  font-family      : 'Oleo Script Swash Caps', cursive;
+  background-image : linear-gradient(var(--clr-teal-6), var(--clr-teal-5));
+  border-radius    : ms(0.5)rem;
+  box-shadow       : 0 8px 0 var(--clr-teal-3), 0 12px 3px rgba(0,0,0,0.1);
+  text-decoration  : none;
+  cursor           : pointer;
+}
+
+.btn-faaabulous span {
+  border-radius : ms(0.5)rem;
+  box-shadow    : inset 0 0 10px rgba(255,255,255,0.4);
+  color         : var(--clr-teal-0);
+  display       : block;
+  font-size     : ms(4)rem;
+  padding       : ms(1)rem;
+  text-align    : center;
+  text-shadow   : 0 0 5px var(--clr-teal-6);
+}
+
+.btn-faaabulous:hover,
+.btn-faaabulous:focus {
+  background-image : linear-gradient(var(--clr-teal-7), var(--clr-teal-6));
+  box-shadow : 0 8px 0 var(--clr-teal-4), 0 12px 3px rgba(0,0,0,0.1);
+  outline : none;
+}
+
+.btn-faaabulous:active {
+  background-image : linear-gradient(var(--clr-teal-5), var(--clr-teal-4));
+  box-shadow : 0 3px 0 var(--clr-teal-4), 0 7px 3px rgba(0,0,0,0.1);
+  transform : translate(0, 5px);
+}
+
+.btn-faaabulous:active span {
+  color : var(--clr-teal-0);
+}
+
+.btn-faaabulous[disabled] {
+  background-image : linear-gradient(var(--clr-grey-6), var(--clr-grey-5));
+  box-shadow       : 0 8px 0 var(--clr-grey-4), 0 12px 3px rgba(0,0,0,0.1);
+}
+
+.btn-faaabulous[disabled] span {
+  text-shadow : 0 -1px 1px var(--clr-grey-4);
+  color : var(--clr-grey-3);
 }
 
 /* ------------------------------------------------------------------- KAIZEN */
