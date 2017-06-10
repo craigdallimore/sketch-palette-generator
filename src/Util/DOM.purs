@@ -1,6 +1,6 @@
 module Util.DOM where
 
-import Color (toHexString)
+import Color (toHexString, darken)
 import Control.Monad.Eff (Eff)
 import Data.Array (length)
 import DOM (DOM)
@@ -15,7 +15,7 @@ import DOM.Node.Types (Document, elementToNode, Node, documentFragmentToNode)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Data.Argonaut (encodeJson)
-import Prelude (Unit, unit, show, (<$>), bind, pure, discard, (<<<), (<>), (>>=), ($), (==))
+import Prelude (Unit, unit, show, negate, (<$>), bind, pure, discard, (<<<), (<>), (>>=), ($), (==))
 import Global (encodeURIComponent)
 import Util.Color (isLight)
 import Util.Types (Color'(..))
@@ -95,14 +95,16 @@ appendPreviewSwatchItem doc fragNode (Color' c) = do
   li <- createElement "li" doc
 
   let liNode    = elementToNode li
-      hex       = toHexString c
-      className = if   isLight c
+      bgHex     = toHexString c
+      bdrHex    = (toHexString <<< darken (negate 0.5)) c
+      style     = "background-color:" <> bgHex <> ";" <> "border-color:" <> bdrHex <> ";"
+      className = if isLight c
                   then "preview__item preview__item--light"
                   else "preview__item preview__item--dark"
 
-  setAttribute "style" ("background-color:" <> hex <> ";") li
+  setAttribute "style" style li
+  setAttribute "title" bgHex li
   setClassName className li
-  setTextContent hex liNode
 
   _ <- appendChild liNode fragNode
 
