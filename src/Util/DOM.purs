@@ -18,7 +18,7 @@ import Data.Argonaut (encodeJson)
 import Prelude (Unit, unit, show, (<$>), bind, pure, discard, (<<<), (<>), (>>=), ($), (==))
 import Global (encodeURIComponent)
 import Util.Color (isLight)
-import Util.Types (Color'(..))
+import Util.Types (Colors'(..), Color'(..))
 
 --------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ updateDownloadLink a colors = if isEmpty colors
   where
     href     = "data:text/json;charset=utf-8," <> encodeURIComponent sketchPalette
     aElement = toElement a
-    sketchPalette = (show <<< encodeJson) colors
+    sketchPalette = (show <<< encodeJson) (Colors' colors)
 
 --------------------------------------------------------------------------------
 
