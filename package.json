@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/craigdallimore/sketch-palette-generator#readme",
   "devDependencies": {
+    "autoprefixer": "^7.1.1",
     "cssnano": "^4.0.0-rc.0",
     "livereload": "^0.6.2",
     "nodemon": "^1.11.0",

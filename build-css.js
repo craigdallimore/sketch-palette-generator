@@ -5,13 +5,15 @@ const modscale = require('postcss-modular-scale');
 const cssprops = require('postcss-custom-properties');
 const clrfunc  = require('postcss-color-function');
 const cssnano  = require('cssnano');
+const autoprefixer = require('autoprefixer');
 
 const processor = postcss([
   atimport,
   modscale,
   cssprops,
   clrfunc,
-  cssnano
+  cssnano,
+  autoprefixer
 ]);
 
 const src  = './style.css';

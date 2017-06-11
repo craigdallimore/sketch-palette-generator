@@ -258,6 +258,7 @@ footer li {
 ----------------------------------------------------------------------------- */
 
 .preview {
+  background    : #fff;
   border        : 1px solid var(--clr-grey-4);
   border-radius : 5px;
   box-shadow    : 0 3px 10px rgba(0,0,0,0.2);
@@ -296,7 +297,7 @@ footer li {
 ----------------------------------------------------------------------------- */
 .btn-faaabulous {
   font-family      : 'Oleo Script Swash Caps', cursive;
-  background-image : linear-gradient(var(--clr-teal-6), var(--clr-teal-5));
+  background-image : linear-gradient(to bottom, var(--clr-teal-6), var(--clr-teal-5));
   border-radius    : ms(0.5)rem;
   box-shadow       : 0 8px 0 var(--clr-teal-3), 0 12px 3px rgba(0,0,0,0.1);
   text-decoration  : none;
@@ -316,13 +317,13 @@ footer li {
 
 .btn-faaabulous:hover,
 .btn-faaabulous:focus {
-  background-image : linear-gradient(var(--clr-teal-7), var(--clr-teal-6));
+  background-image : linear-gradient(to bottom, var(--clr-teal-7), var(--clr-teal-6));
   box-shadow : 0 8px 0 var(--clr-teal-4), 0 12px 3px rgba(0,0,0,0.1);
   outline : none;
 }
 
 .btn-faaabulous:active {
-  background-image : linear-gradient(var(--clr-teal-5), var(--clr-teal-4));
+  background-image : linear-gradient(to bottom, var(--clr-teal-5), var(--clr-teal-4));
   box-shadow : 0 3px 0 var(--clr-teal-4), 0 7px 3px rgba(0,0,0,0.1);
   transform : translate(0, 5px);
 }
@@ -332,7 +333,7 @@ footer li {
 }
 
 .btn-faaabulous[disabled] {
-  background-image : linear-gradient(var(--clr-grey-6), var(--clr-grey-5));
+  background-image : linear-gradient(to bottom, var(--clr-grey-6), var(--clr-grey-5));
   box-shadow       : 0 8px 0 var(--clr-grey-4), 0 12px 3px rgba(0,0,0,0.1);
 }
 
